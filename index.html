@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Les Protéines — Quiz SVT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@300;400;600&family=Source+Serif+4:ital,wght@0,300;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #1a1710;
+      --ink-soft:  #3d3a2e;
+      --ink-muted: #7a7460;
+      --ink-faint: #b8b09a;
+      --paper:     #f7f4ed;
+      --paper-warm:#ede9df;
+      --paper-deep:#e0dbd0;
+      --rule:      #cec8b8;
+      --accent:    #2d5a3d;
+      --accent-lt: #e8f0ea;
+      --accent-mid:#4a8c5c;
+      --err:       #7a2c1e;
+      --err-lt:    #f5e8e5;
+      --amber:     #8c6a1e;
+      --amber-lt:  #f5edd8;
+      --blue:      #1e3d6e;
+      --blue-lt:   #e5ecf5;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes lineGrow {
+      from { transform: scaleX(0); } to { transform: scaleX(1); }
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Source Sans 3', sans-serif;
+      background: var(--paper);
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(180,170,150,0.15) 27px, rgba(180,170,150,0.15) 28px);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2.5rem 1rem 5rem;
+      color: var(--ink);
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 560px;
+      animation: fadeIn 0.5s ease both;
+    }
+
+    /* MASTHEAD */
+    .masthead {
+      text-align: center;
+      margin-bottom: 2.25rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--ink);
+      position: relative;
+    }
+    .masthead::after {
+      content: '';
+      position: absolute;
+      bottom: -5px; left: 0; right: 0;
+      height: 1px;
+      background: var(--ink);
+    }
+    .masthead-kicker {
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 10px;
+    }
+    .masthead-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .masthead-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .masthead-sub {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 14px;
+      color: var(--ink-muted);
+      margin-top: 6px;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-top: 3px solid var(--ink);
+      padding: 2rem 2rem 1.75rem;
+      position: relative;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; animation: fadeUp 0.35s ease both; }
+
+    /* ===== INTRO ===== */
+    .intro-lead {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 15px;
+      color: var(--ink-soft);
+      line-height: 1.8;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section-head {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 10px;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 1.75rem;
+    }
+
+    .mode-card {
+      padding: 14px;
+      border: 1px solid var(--rule);
+      background: var(--paper-warm);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: left;
+      position: relative;
+    }
+    .mode-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s ease;
+    }
+    .mode-card:hover { border-color: var(--ink-muted); }
+    .mode-card:hover::before, .mode-card.selected::before { transform: scaleX(1); }
+    .mode-card.selected { border-color: var(--accent); background: var(--accent-lt); }
+
+    .mode-roman {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--ink-faint);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .mode-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .mode-desc {
+      font-size: 11px;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+
+    .start-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .start-btn:hover { background: var(--ink-soft); }
+    .start-btn:active { transform: scale(0.99); }
+
+    /* ===== QUESTION ===== */
+    .q-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 2px;
+      background: var(--rule);
+      margin-right: 14px;
+      position: relative;
+    }
+    .progress-fill {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+
+    .score-tag {
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .q-cat {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border: 1px solid currentColor;
+      margin-bottom: 10px;
+      color: var(--blue);
+    }
+    .q-cat.mut { color: var(--amber); }
+    .q-cat.fn  { color: var(--err); }
+
+    .q-number {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-bottom: 8px;
+    }
+
+    .question-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--ink);
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .options-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 1.25rem; }
+
+    .opt-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 14px;
+      border: 1px solid var(--rule);
+      background: var(--paper-warm);
+      cursor: pointer;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      text-align: left;
+      transition: border-color 0.15s, background 0.15s;
+      line-height: 1.5;
+    }
+    .opt-btn:hover:not(:disabled) { border-color: var(--ink-muted); background: var(--paper-deep); }
+
+    .opt-letter {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border: 1px solid var(--ink-faint);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      margin-top: 1px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .opt-btn.correct { background: var(--accent-lt); border-color: var(--accent); }
+    .opt-btn.correct .opt-letter { background: var(--accent); border-color: var(--accent); color: white; }
+    .opt-btn.correct .opt-text { color: var(--accent); }
+    .opt-btn.wrong { background: var(--err-lt); border-color: var(--err); }
+    .opt-btn.wrong .opt-letter { background: var(--err); border-color: var(--err); color: white; }
+    .opt-btn.wrong .opt-text { color: var(--err); }
+    .opt-btn:disabled { cursor: default; }
+
+    .feedback-box {
+      display: none;
+      padding: 12px 14px;
+      margin-bottom: 1.25rem;
+      font-size: 13px;
+      line-height: 1.7;
+      border-left: 3px solid transparent;
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-weight: 300;
+    }
+    .feedback-box.show { display: block; }
+    .feedback-box.good { background: var(--accent-lt); border-color: var(--accent); color: var(--accent); }
+    .feedback-box.bad  { background: var(--err-lt);    border-color: var(--err);    color: var(--err); }
+    .feedback-box strong { font-family: 'Source Sans 3', sans-serif; font-style: normal; font-weight: 600; font-size: 12px; display: block; margin-bottom: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    .next-btn {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      border: 1px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .next-btn.show { display: inline-flex; }
+    .next-btn:hover { background: var(--ink); color: var(--paper); }
+
+    /* ===== RESULTS ===== */
+    .result-header {
+      text-align: center;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 1.5rem;
+    }
+    .result-medal { font-size: 48px; margin-bottom: 0.5rem; }
+    .result-score {
+      font-family: 'Playfair Display', serif;
+      font-size: 58px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .result-msg {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 15px;
+      color: var(--ink-muted);
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .stat-box {
+      border: 1px solid var(--rule);
+      padding: 12px 8px;
+      text-align: center;
+      background: var(--paper-warm);
+    }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--ink); }
+    .stat-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); margin-top: 3px; }
+
+    .result-btns { display: flex; gap: 10px; margin-bottom: 1.75rem; }
+    .replay-btn {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--rule);
+      background: var(--paper-warm);
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .replay-btn:hover { background: var(--paper-deep); }
+
+    .review-section { border-top: 1px solid var(--rule); padding-top: 1.25rem; }
+    .review-head { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+    .review-item { padding: 10px 0; border-bottom: 1px solid var(--paper-deep); }
+    .review-item:last-child { border: none; }
+    .rq { font-size: 12px; color: var(--ink-muted); margin-bottom: 4px; line-height: 1.5; }
+    .ra-good { font-size: 13px; font-weight: 600; color: var(--accent); }
+    .ra-bad  { font-size: 13px; font-weight: 600; color: var(--err); }
+
+    /* FOOTER */
+    .page-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="masthead">
+    <div class="masthead-kicker">Sciences de la vie et de la Terre</div>
+    <div class="masthead-title">Les <em>Protéines</em></div>
+    <div class="masthead-sub">Structure, mutations &amp; conséquences fonctionnelles</div>
+  </div>
+
+  <div class="card">
+
+    <!-- ===== INTRO ===== -->
+    <div class="screen active" id="screen-intro">
+      <p class="intro-lead">
+        Dix questions pour explorer la structure des protéines, les différents types de mutations et leurs conséquences sur la fonction cellulaire.
+        Choisis un thème et commence.
+      </p>
+
+      <div class="section-head">Choisir un thème</div>
+      <div class="mode-grid" id="mode-grid">
+        <div class="mode-card selected" data-mode="all">
+          <span class="mode-roman">I–IV</span>
+          <div class="mode-title">Programme complet</div>
+          <div class="mode-desc">Structure + mutations + conséquences</div>
+        </div>
+        <div class="mode-card" data-mode="structure">
+          <span class="mode-roman">I</span>
+          <div class="mode-title">Structure</div>
+          <div class="mode-desc">Acides aminés, liaisons, repliement</div>
+        </div>
+        <div class="mode-card" data-mode="mutation">
+          <span class="mode-roman">II</span>
+          <div class="mode-title">Mutations</div>
+          <div class="mode-desc">Types et impact sur la séquence</div>
+        </div>
+        <div class="mode-card" data-mode="function">
+          <span class="mode-roman">III</span>
+          <div class="mode-title">Conséquences</div>
+          <div class="mode-desc">Maladies, perte et gain de fonction</div>
+        </div>
+      </div>
+
+      <button class="start-btn" id="start-btn">Commencer le quiz →</button>
+    </div>
+
+    <!-- ===== QUESTION ===== -->
+    <div class="screen" id="screen-question">
+      <div class="q-meta">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="score-tag" id="live-score">0 pt</div>
+      </div>
+      <div class="q-cat" id="q-cat">Structure</div>
+      <div class="q-number" id="q-number">Question 1 sur 10</div>
+      <div class="question-text" id="question-text"></div>
+      <div class="options-list" id="options-list"></div>
+      <div class="feedback-box" id="feedback-box"></div>
+      <button class="next-btn" id="next-btn">Question suivante →</button>
+    </div>
+
+    <!-- ===== RESULTS ===== -->
+    <div class="screen" id="screen-results">
+      <div class="result-header">
+        <div class="result-medal" id="result-medal"></div>
+        <div class="result-score" id="result-score"></div>
+        <div class="result-msg" id="result-msg"></div>
+      </div>
+      <div class="stat-row" id="stat-row"></div>
+      <div class="result-btns">
+        <button class="replay-btn" id="replay-btn">↩ Changer de thème</button>
+        <button class="replay-btn" id="retry-btn" style="background:var(--ink);color:var(--paper);border-color:var(--ink);">↺ Rejouer ce thème</button>
+      </div>
+      <div class="review-section">
+        <div class="review-head">Récapitulatif des réponses</div>
+        <div id="review-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+<script>
+const QS = [
+  {cat:"structure",text:"Les protéines sont des polymères formés par l'enchaînement d'unités appelées :",opts:["Nucléotides","Acides aminés","Monosaccharides","Acides gras"],ans:1,explain:"Les protéines sont constituées de 20 types d'acides aminés reliés par des liaisons peptidiques. Leur séquence est directement codée par l'ADN."},
+  {cat:"structure",text:"Quelle liaison chimique unit deux acides aminés consécutifs dans une chaîne polypeptidique ?",opts:["Liaison hydrogène","Liaison ionique","Liaison peptidique","Pont disulfure"],ans:2,explain:"La liaison peptidique (–CO–NH–) se forme entre le groupement carboxyle d'un acide aminé et le groupement amine du suivant, avec élimination d'une molécule d'eau."},
+  {cat:"structure",text:"La structure primaire d'une protéine correspond à :",opts:["Son repliement en hélice α ou feuillet β","La séquence linéaire de ses acides aminés","Ses interactions avec d'autres sous-unités","Sa localisation dans la cellule"],ans:1,explain:"La structure primaire est la séquence des acides aminés de N-terminus en C-terminus. C'est elle qui détermine tous les niveaux supérieurs de structure tridimensionnelle."},
+  {cat:"structure",text:"Quel niveau de structure est stabilisé par des liaisons hydrogène entre les groupements du squelette peptidique ?",opts:["Structure primaire","Structure secondaire","Structure tertiaire","Structure quaternaire"],ans:1,explain:"La structure secondaire — hélices α et feuillets β — est maintenue par des liaisons hydrogène entre les groupements C=O et N–H du squelette, indépendamment des chaînes latérales."},
+  {cat:"structure",text:"La structure tertiaire est maintenue par plusieurs types d'interactions, SAUF :",opts:["Ponts disulfure","Liaisons de Van der Waals","Liaisons peptidiques entre acides aminés distants","Interactions hydrophobes"],ans:2,explain:"Les liaisons peptidiques relient uniquement les acides aminés consécutifs — elles définissent la structure primaire. La structure tertiaire implique des ponts disulfure, Van der Waals, liaisons hydrogène et interactions hydrophobes entre chaînes latérales."},
+  {cat:"mutation",text:"Une mutation ponctuelle qui substitue un codon sens par un codon STOP est appelée :",opts:["Mutation faux-sens","Mutation non-sens","Mutation silencieuse","Délétion"],ans:1,explain:"Une mutation non-sens crée un codon stop prématuré, entraînant la synthèse d'une protéine tronquée et généralement non fonctionnelle."},
+  {cat:"mutation",text:"Une substitution d'un seul nucléotide qui ne modifie pas l'acide aminé codé est une :",opts:["Mutation faux-sens","Mutation non-sens","Mutation silencieuse","Insertion"],ans:2,explain:"Les mutations silencieuses (synonymes) n'entraînent aucun changement d'acide aminé, grâce à la dégénérescence du code génétique : plusieurs codons peuvent coder le même acide aminé."},
+  {cat:"mutation",text:"L'insertion ou délétion d'un nucléotide (non multiple de 3) dans un gène provoque :",opts:["Le changement d'un seul acide aminé","Un décalage du cadre de lecture","Une protéine plus courte d'un seul AA","Aucun changement visible"],ans:1,explain:"Un décalage du cadre de lecture (frameshift) modifie la lecture de tous les codons en aval de la mutation, produisant généralement une protéine radicalement différente et non fonctionnelle."},
+  {cat:"mutation",text:"Quelle mutation ne modifie PAS la séquence en acides aminés de la protéine ?",opts:["Faux-sens","Non-sens","Silencieuse","Frameshift"],ans:2,explain:"La mutation silencieuse change un nucléotide sans modifier l'acide aminé correspondant (dégénérescence du code). La protéine produite est identique à la protéine sauvage."},
+  {cat:"function",text:"Dans la drépanocytose, la substitution Glu→Val dans la β-globine entraîne :",opts:["Une augmentation de l'affinité pour O₂","Une polymérisation de l'hémoglobine désoxygénée","Une destruction immédiate de la protéine","Une résistance exclusive au paludisme"],ans:1,explain:"La substitution Glu→Val rend la β-globine hydrophobe en surface. En condition désoxygénée, les molécules d'HbS se polymérisent en fibres rigides, déformant le globule rouge en faucille."},
+  {cat:"function",text:"Le fait que 64 codons codent seulement 20 acides aminés est appelé :",opts:["L'universalité du code génétique","La dégénérescence du code génétique","L'effet fondateur","La complémentarité des bases"],ans:1,explain:"La dégénérescence du code génétique signifie que plusieurs codons peuvent coder pour le même acide aminé. Elle est à l'origine des mutations silencieuses."},
+  {cat:"function",text:"Dans la mucoviscidose, la mutation ΔF508 du gène CFTR entraîne principalement :",opts:["Une surproduction de la protéine CFTR","La dégradation de la protéine mal repliée avant qu'elle atteigne la membrane","Une suractivation du canal chlorure","La délétion totale du gène CFTR"],ans:1,explain:"La perte de la phénylalanine 508 empêche le repliement correct de CFTR. La protéine mal conformée est reconnue par le contrôle qualité du réticulum endoplasmique et dégradée avant d'atteindre la membrane plasmique."},
+  {cat:"function",text:"Une mutation dans le site actif d'une enzyme a généralement pour conséquence :",opts:["Une meilleure efficacité catalytique","Une perte totale ou partielle d'activité","Aucun effet sur l'activité enzymatique","Un changement de localisation cellulaire"],ans:1,explain:"Le site actif est la région précise où se fixe le substrat. Toute modification de sa géométrie peut réduire ou abolir l'activité catalytique de l'enzyme."},
+];
+
+const LETTERS = ['A','B','C','D'];
+const MODES = { all:null, structure:'structure', mutation:'mutation', function:'function' };
+const CAT_LABELS = { structure:'Structure', mutation:'Mutation', function:'Conséquences' };
+
+let mode='all', questions=[], current=0, score=0, answered=false, history=[];
+
+function shuffle(a){ let b=[...a]; for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+
+function buildSet(){
+  let pool = MODES[mode] ? QS.filter(q=>q.cat===MODES[mode]) : QS;
+  return shuffle(pool).slice(0, Math.min(10, pool.length));
+}
+
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el = document.getElementById('screen-'+id);
+  el.classList.add('active');
+}
+
+function renderQ(){
+  const q = questions[current], n = questions.length;
+  document.getElementById('progress-fill').style.width = ((current/n)*100)+'%';
+  document.getElementById('live-score').textContent = score + ' pt' + (score>1?'s':'');
+  document.getElementById('q-number').textContent = 'Question '+(current+1)+' sur '+n;
+
+  const cat = document.getElementById('q-cat');
+  cat.textContent = CAT_LABELS[q.cat];
+  cat.className = 'q-cat' + (q.cat==='mutation'?' mut':q.cat==='function'?' fn':'');
+
+  document.getElementById('question-text').textContent = q.text;
+
+  const list = document.getElementById('options-list');
+  list.innerHTML = '';
+  q.opts.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = '<span class="opt-letter">'+LETTERS[i]+'</span><span class="opt-text">'+opt+'</span>';
+    btn.onclick = ()=>answer(i);
+    list.appendChild(btn);
+  });
+
+  document.getElementById('feedback-box').className='feedback-box';
+  document.getElementById('next-btn').className='next-btn';
+  answered = false;
+}
+
+function answer(i){
+  if(answered) return;
+  answered = true;
+  const q = questions[current];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((b,idx)=>{
+    b.disabled=true;
+    if(idx===q.ans) b.classList.add('correct');
+    else if(idx===i && i!==q.ans) b.classList.add('wrong');
+  });
+  const correct = i===q.ans;
+  if(correct) score++;
+  document.getElementById('live-score').textContent = score+' pt'+(score>1?'s':'');
+
+  const fb = document.getElementById('feedback-box');
+  fb.className='feedback-box show '+(correct?'good':'bad');
+  fb.innerHTML='<strong>'+(correct?'✓ Correct':'✗ Inexact')+'</strong>'+q.explain;
+  history.push({q:q.text, correct, good:q.opts[q.ans], yours:q.opts[i]});
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function results(){
+  show('results');
+  document.getElementById('progress-fill').style.width='100%';
+  const n=questions.length, pct=Math.round((score/n)*100);
+  document.getElementById('result-score').textContent=score+'/'+n;
+  const medals=['💡','💡','💡','💡','💡','👍','👍','🥈','🥈','🏆','🏆'];
+  document.getElementById('result-medal').textContent=medals[score]||'💡';
+  const msgs=['À retravailler, mais chaque erreur est un apprentissage.','À retravailler, mais chaque erreur est un apprentissage.','À retravailler, mais chaque erreur est un apprentissage.','À retravailler, mais chaque erreur est un apprentissage.','À retravailler, mais chaque erreur est un apprentissage.','La moitié acquise — continue sur ta lancée.','Pas mal du tout, quelques notions à consolider.','Bien joué, la majorité est maîtrisée.','Très bien, presque sans faute.','Excellent — quasi parfait !','Parfait. Tu maîtrises pleinement ce chapitre.'];
+  document.getElementById('result-msg').textContent=msgs[score];
+  const wrong=history.filter(h=>!h.correct).length;
+  document.getElementById('stat-row').innerHTML=`
+    <div class="stat-box"><div class="stat-num" style="color:var(--accent)">${score}</div><div class="stat-lbl">Correctes</div></div>
+    <div class="stat-box"><div class="stat-num" style="color:var(--err)">${wrong}</div><div class="stat-lbl">Erreurs</div></div>
+    <div class="stat-box"><div class="stat-num">${pct}%</div><div class="stat-lbl">Réussite</div></div>
+  `;
+  const rl=document.getElementById('review-list');
+  rl.innerHTML='';
+  history.forEach(h=>{
+    const d=document.createElement('div');
+    d.className='review-item';
+    d.innerHTML=`<div class="rq">${h.q}</div><div class="${h.correct?'ra-good':'ra-bad'}">${h.correct?'✓ '+h.good:'✗ '+h.yours+' — Réponse : '+h.good}</div>`;
+    rl.appendChild(d);
+  });
+}
+
+document.getElementById('mode-grid').querySelectorAll('.mode-card').forEach(c=>{
+  c.onclick=()=>{ document.querySelectorAll('.mode-card').forEach(x=>x.classList.remove('selected')); c.classList.add('selected'); mode=c.dataset.mode; };
+});
+document.getElementById('start-btn').onclick=()=>{ questions=buildSet(); current=0; score=0; history=[]; show('question'); renderQ(); };
+document.getElementById('next-btn').onclick=()=>{ current++; if(current>=questions.length){results();return;} renderQ(); };
+document.getElementById('replay-btn').onclick=()=>show('intro');
+document.getElementById('retry-btn').onclick=()=>{ questions=buildSet(); current=0; score=0; history=[]; show('question'); renderQ(); };
+</script>
+</body>
+</html>
